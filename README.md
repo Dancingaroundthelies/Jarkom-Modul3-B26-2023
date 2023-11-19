@@ -400,6 +400,9 @@ option domain-name-servers 192.168.122.1;
 service isc-dhcp-server restart
 ```
 
+### Result
+![image](https://github.com/Dancingaroundthelies/Jarkom-Modul3-B26-2023/assets/116566988/a7dcb24e-228d-4477-a588-a221afdb2162)
+
 
 ## Soal 6
 >Pada masing-masing worker PHP, lakukan konfigurasi virtual host untuk website berikut dengan menggunakan php 7.3. (6)
@@ -451,7 +454,10 @@ rm -rf /etc/nginx/sites-enabled/default
 service php7.3-fpm restart
 service nginx restart
 ```
-(foto)
+
+### Result
+Jalanin Perintah `lynx localhost` pada masing-masing worker dan hasilnya akan sebagai berikut:
+![lynx no 6](https://github.com/Dancingaroundthelies/Jarkom-Modul3-B26-2023/assets/116566988/e5bc4c67-2865-4858-8e13-81fa4491ff1f)
 
 
 ## Soal 7
@@ -689,6 +695,10 @@ Jalankan perintah berikut pada client `Sein`
 ```
 ab -n 1000 -c 100 http://granz.channel.b26.com/
 ```
+Dan akan menampilkan seperti ini
+![image](https://github.com/Dancingaroundthelies/Jarkom-Modul3-B26-2023/assets/116566988/942fb2d4-feb6-48ae-a677-666e4bbeeaed)
+
+
 
 ### Soal 8
 >Karena diminta untuk menuliskan grimoire, buatlah analisis hasil testing dengan 200 request dan 10 request/second masing-masing algoritma Load Balancer dengan ketentuan sebagai berikut: 1. Nama Algoritma Load Balancer; 2. Report hasil testing pada Apache Benchmark; 3.Grafik request per second untuk masing masing algoritma; 4. Analisis
