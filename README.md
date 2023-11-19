@@ -695,7 +695,8 @@ Jalankan perintah berikut pada client `Sein`
 ```
 ab -n 1000 -c 100 http://granz.channel.b26.com/
 ```
-Dan akan menampilkan seperti ini
+Dan akan menampilkan seperti ini.
+
 ![image](https://github.com/Dancingaroundthelies/Jarkom-Modul3-B26-2023/assets/116566988/942fb2d4-feb6-48ae-a677-666e4bbeeaed)
 
 
