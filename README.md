@@ -191,10 +191,49 @@ service bind9 start
 ## Soal 2
 >Semua CLIENT harus menggunakan konfigurasi dari DHCP Server. Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.16 - [prefix IP].3.32 dan [prefix IP].3.64 - [prefix IP].3.80
 >
+Sebelum mengerjakan perlu untuk melakukan setup untuk DHCP Server terlebih dahulu. Selanjutnya kita perlu menjalankan command dibawah ini pada DHCP Server
+
+### Script
+```sh
+echo 'subnet 192.191.1.0 netmask 255.255.255.0 {
+}
+
+subnet 192.191.2.0 netmask 255.255.255.0 {
+}
+
+subnet 192.191.3.0 netmask 255.255.255.0 {
+    range 192.191.3.16 192.191.3.32;
+    range 192.191.3.64 192.191.3.80;
+    option routers 192.191.3.0;
+}' > /etc/dhcp/dhcpd.conf
+```
 
 ## Soal 3
 >Client yang melalui Switch4 mendapatkan range IP dari [prefix IP].4.12 - [prefix IP].4.20 dan [prefix IP].4.160 - [prefix IP].4.168
 >
+Selanjutnya kita perlu menambahkan beberapa konfigurasi baru untuk switch4 dengan menjalankan command dibawah ini
+
+### Script
+```sh
+echo 'subnet 192.191.1.0 netmask 255.255.255.0 {
+}
+
+subnet 192.191.2.0 netmask 255.255.255.0 {
+}
+
+subnet 192.191.3.0 netmask 255.255.255.0 {
+    range 192.191.3.16 192.191.3.32;
+    range 192.191.3.64 192.191.3.80;
+    option routers 192.191.3.0;
+}
+
+subnet 192.191.4.0 netmask 255.255.255.0 {
+    range 192.191.4.12 192.191.4.20;
+    range 192.191.4.160 192.191.4.168;
+    option routers 192.191.4.0;
+} ' > /etc/dhcp/dhcpd.conf
+```
+
 
 ## Soal 4
 >Client mendapatkan DNS dari Heiter dan dapat terhubung dengan internet melalui DNS tersebut
