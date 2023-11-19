@@ -706,6 +706,10 @@ Dan akan menampilkan seperti ini
 
 Sebelum mengerjakan perlu untuk melakukan setup terlebih dahulu. Selebihnya untuk konfigurasinya sama dengan soal 7. Kemudian tinggal panggil `htop` pada node `Lawine`
 
+### Result
+![htop no8](https://github.com/Dancingaroundthelies/Jarkom-Modul3-B26-2023/assets/116566988/2bafd3f7-828c-4e63-92e7-49bc087e8b5d)
+
+
 ## Soal 9
 > Dengan menggunakan algoritma Round Robin, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 100 request dengan 10 request/second, kemudian tambahkan grafiknya pada grimoire. (9)
 >
