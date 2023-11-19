@@ -238,6 +238,73 @@ subnet 192.191.4.0 netmask 255.255.255.0 {
 ## Soal 4
 >Client mendapatkan DNS dari Heiter dan dapat terhubung dengan internet melalui DNS tersebut
 >
+kita akan menambahkan beberapa konfigurasi seperti `option broadcast-address` dan `option domain-name-server` agar dapat DNS yang telah disiapkan sebelumnya dapat digunakan
+
+### Script
+```sh
+subnet 192.191.3.0 netmask 255.255.255.0 {
+    ...
+    option broadcast-address 192.191.3.255;
+    option domain-name-servers 192.191.1.2;
+    ...
+}
+
+subnet 192.191.4.0 netmask 255.255.255.0 {
+    option broadcast-address 192.191.4.255;
+    option domain-name-servers 192.191.1.2;
+} 
+```
+Lalu gunakan `shell` script sebagai berikut
+```sh
+echo 'subnet 192.191.1.0 netmask 255.255.255.0 {
+}
+
+subnet 192.191.2.0 netmask 255.255.255.0 {
+}
+
+subnet 192.191.3.0 netmask 255.255.255.0 {
+    range 192.191.3.16 192.191.3.32;
+    range 192.191.3.64 192.191.3.80;
+    option routers 192.191.3.0;
+    option broadcast-address 192.191.3.255;
+    option domain-name-servers 192.191.1.2;
+}
+
+subnet 192.191.4.0 netmask 255.255.255.0 {
+    range 192.191.4.12 192.191.4.20;
+    range 192.191.4.160 192.191.4.168;
+    option routers 192.191.4.0;
+    option broadcast-address 192.191.4.255;
+    option domain-name-servers 192.191.1.2;
+} ' > /etc/dhcp/dhcpd.conf
+
+service isc-dhcp-server start
+```
+
+Selanjutnya kita perlu untuk melakukan setup untuk DHCP Relay terlebih dahulu. Selanjutnya kita perlu menjalankan command dibawah ini pada DHCP Relay
+```sh
+echo '# Defaults for isc-dhcp-relay initscript
+# sourced by /etc/init.d/isc-dhcp-relay
+# installed at /etc/default/isc-dhcp-relay by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# What servers should the DHCP relay forward requests to?
+SERVERS="192.191.1.1"
+
+# On what interfaces should the DHCP relay (dhrelay) serve DHCP requests?
+INTERFACES="eth1 eth2 eth3 eth4"
+
+# Additional options that are passed to the DHCP relay daemon?
+OPTIONS=""' > /etc/default/isc-dhcp-relay
+
+service isc-dhcp-relay start 
+```
+Lalu pada file `/etc/sysctl.conf` lakukan uncommented pada `net.ipv4.ip_forward=1`  
+
+Terakhir jangan lupa untuk restart seluruh client agar dapat melakukan leasing IP dari DHCP Server
 
 ## Soal 5
 
