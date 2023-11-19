@@ -101,13 +101,104 @@ hwaddress ether ca:e5:52:ee:64:96
 ```
 
 ## Soal 1
+>Lakukan konfigurasi sesuai dengan peta yang sudah diberikan.
+>
 Pertama kita perlu mempersiapkan konfigurasi topologi dan setup seperti aturan diatas. Selanjutnya untuk kebutuhan testing, kita perlu menambahkan register domain berupa `riegel.canyon.b26.com` untuk worker Laravel dan granz.channel.b26.com untuk worker PHP yang mengarah pada worker dengan IP `192.191.x.1`. Karena pada konfirgurasi topologi sebelumnya seluruh worker sudah menggunakan DHCP, maka kita perlu modifikasi sedikit pada node `Lugner` dan `Fern` seperti dibawah ini
+- **Lugner (PHP Worker)**
+  ```
+  auto eth0
+  iface eth0 inet static
+	address 192.191.3.1
+	netmask 255.255.255.0
+	gateway 192.191.3.0
+  ```
+- **Fern (Laravel Worker)**
+  ```
+  auto eth0
+  iface eth0 inet static
+	address 192.191.4.1
+	netmask 255.255.255.0
+	gateway 192.191.4.0
+  ```
+Selanjutnya pada DNS Server (Heiter), kita perlu menjalankan command dibawah ini
+### Script
+```sh
+echo 'zone "riegel.canyon.b26.com" {
+    type master;
+    file "/etc/bind/sites/riegel.canyon.b26.com";
+};
 
+zone "granz.channel.b26.com" {
+    type master;
+    file "/etc/bind/sites/granz.channel.b26.com";
+};
+
+zone "1.191.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/sites/1.191.192.in-addr.arpa";
+};' > /etc/bind/named.conf.local
+
+mkdir -p /etc/bind/sites
+cp /etc/bind/db.local /etc/bind/sites/riegel.canyon.b26.com
+cp /etc/bind/db.local /etc/bind/sites/granz.channel.b26.com
+cp /etc/bind/db.local /etc/bind/sites/1.191.192.in-addr.arpa
+
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     riegel.canyon.b26.com. root.riegel.canyon.b26.com. (
+                        2023111401      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      riegel.canyon.b26.com.
+@       IN      A       192.191.4.1     ; IP Fern
+www     IN      CNAME   riegel.canyon.b26.com.' > /etc/bind/sites/riegel.canyon.b26.com
+
+echo '
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     granz.channel.b26.com. root.granz.channel.b26.com. (
+                        2023111401      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      granz.channel.b26.com.
+@       IN      A       192.191.3.1     ; IP Lugner
+www     IN      CNAME   granz.channel.b26.com.' > /etc/bind/sites/granz.channel.b26.com
+
+echo 'options {
+      directory "/var/cache/bind";
+
+      forwarders {
+              192.168.122.1;
+      };
+
+      // dnssec-validation auto;
+      allow-query{any;};
+      auth-nxdomain no;    # conform to RFC1035
+      listen-on-v6 { any; };
+}; ' >/etc/bind/named.conf.options
+
+service bind9 start
+```
 ## Soal 2
+>Semua CLIENT harus menggunakan konfigurasi dari DHCP Server. Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.16 - [prefix IP].3.32 dan [prefix IP].3.64 - [prefix IP].3.80
+>
 
 ## Soal 3
+>Client yang melalui Switch4 mendapatkan range IP dari [prefix IP].4.12 - [prefix IP].4.20 dan [prefix IP].4.160 - [prefix IP].4.168
+>
 
 ## Soal 4
+>Client mendapatkan DNS dari Heiter dan dapat terhubung dengan internet melalui DNS tersebut
+>
 
 ## Soal 5
 
